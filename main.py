@@ -1,7 +1,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-import math
+import time
 
 mp_pose = mp.solutions.pose
 pose = mp_pose.Pose()
@@ -19,6 +19,8 @@ def calculate_angle(a, b, c):
     return np.degrees(radians)
 
 cap = cv2.VideoCapture(0)
+
+bad_posture_start = None
 
 while True:
     ret, frame = cap.read()
@@ -45,9 +47,20 @@ while True:
         if angle < 40:
             status = "Bad Posture"
             color = (0, 0, 255)
+
+            if bad_posture_start is None:
+                bad_posture_start = time.time()
+
+            elapsed = time.time() - bad_posture_start
+
+            if elapsed > 5:
+                cv2.putText(frame, "ALERT! Fix Posture!", (30, 150),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
+
         else:
             status = "Good Posture"
             color = (0, 255, 0)
+            bad_posture_start = None
 
         cv2.putText(frame, f'Angle: {int(angle)}', (30, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
