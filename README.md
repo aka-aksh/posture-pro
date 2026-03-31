@@ -22,3 +22,11 @@ This project uses computer vision to detect posture in real time and alert users
 ```bash
 pip install -r requirements.txt
 python main.py
+
+
+## How It Works
+- The system uses MediaPipe to detect body landmarks
+- Key points like ear, shoulder, and hip are extracted
+- The angle between these points is calculated
+- If the angle is below a threshold, posture is classified as bad
+- If bad posture continues for a few seconds, an alert is triggered
